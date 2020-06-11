@@ -1,0 +1,11 @@
+<Project>
+    <PropertyGroup>
+        <PackageTags>f#, fsharp</PackageTags>
+        <PackageProjectUrl>https://github.com/mchaloupka/Slp.Fsm</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/mchaloupka/Slp.Fsm/blob/master/LICENSE.md</PackageLicenseUrl>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <RepositoryType>git</RepositoryType>
+        <Authors>mchaloupka</Authors>
+        <RepositoryUrl>https://github.com/mchaloupka/Slp.Fsm</RepositoryUrl>
+    </PropertyGroup>
+</Project>
