@@ -1,5 +1,6 @@
 <Project>
     <PropertyGroup>
+        <!-- summary is not migrated from project.json, but you can use the <Description> property for that if needed. -->
         <PackageTags>f#, fsharp</PackageTags>
         <PackageProjectUrl>https://github.com/mchaloupka/Slp.Fsm</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/mchaloupka/Slp.Fsm/blob/master/LICENSE.md</PackageLicenseUrl>
@@ -7,5 +8,6 @@
         <RepositoryType>git</RepositoryType>
         <Authors>mchaloupka</Authors>
         <RepositoryUrl>https://github.com/mchaloupka/Slp.Fsm</RepositoryUrl>
+        <!-- owners is not supported in MSBuild -->
     </PropertyGroup>
 </Project>

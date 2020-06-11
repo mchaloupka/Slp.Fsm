@@ -1,4 +1,4 @@
-﻿namespace Slp.Fsm
+namespace Slp.Fsm
 
 type Edge<'C> =
     | LambdaEdge
