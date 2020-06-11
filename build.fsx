@@ -64,7 +64,7 @@ let srcAndTest =
 let distDir = __SOURCE_DIRECTORY__  @@ "dist"
 let distGlob = distDir @@ "*.nupkg"
 
-let coverageThresholdPercent = 80
+let coverageThresholdPercent = "80C255"
 let coverageReportDir =  __SOURCE_DIRECTORY__  @@ "docs" @@ "coverage"
 
 
@@ -429,12 +429,13 @@ let dotnetTest ctx =
     let excludeCoverage =
         !! testsGlob
         |> Seq.map IO.Path.GetFileNameWithoutExtension
+        |> Seq.append [ "FSharp.Core"; "xunit" ]
         |> String.concat "|"
     let args =
         [
             "--no-build"
             sprintf "/p:AltCover=%b" (not disableCodeCoverage)
-            sprintf "/p:AltCoverThreshold=%d" coverageThresholdPercent
+            sprintf "/p:AltCoverThreshold=%s" coverageThresholdPercent
             sprintf "/p:AltCoverAssemblyExcludeFilter=%s" excludeCoverage
         ]
     DotNet.test(fun c ->
