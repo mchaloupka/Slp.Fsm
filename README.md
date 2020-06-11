@@ -1,15 +1,13 @@
 # Slp.Fsm
 
-[Enter useful description for Slp.Fsm]
+Finite State Machine implementation.
 
 ---
 
 ## Builds
 
-macOS/Linux | Windows
---- | ---
-[![Travis Badge](https://travis-ci.org/mchaloupka/Slp.Fsm.svg?branch=master)](https://travis-ci.org/mchaloupka/Slp.Fsm) | [![Build status](https://ci.appveyor.com/api/projects/status/github/mchaloupka/Slp.Fsm?svg=true)](https://ci.appveyor.com/project/mchaloupka/Slp.Fsm)
-[![Build History](https://buildstats.info/travisci/chart/mchaloupka/Slp.Fsm)](https://travis-ci.org/mchaloupka/Slp.Fsm/builds) | [![Build History](https://buildstats.info/appveyor/chart/mchaloupka/Slp.Fsm)](https://ci.appveyor.com/project/mchaloupka/Slp.Fsm)  
+[![Build status](https://ci.appveyor.com/api/projects/status/github/mchaloupka/Slp.Fsm?svg=true)](https://ci.appveyor.com/project/mchaloupka/Slp.Fsm)
+[![Build History](https://buildstats.info/appveyor/chart/mchaloupka/Slp.Fsm)](https://ci.appveyor.com/project/mchaloupka/Slp.Fsm)  
 
 ## NuGet 
 
@@ -24,7 +22,6 @@ Slp.Fsm | [![NuGet Badge](https://buildstats.info/nuget/Slp.Fsm)](https://www.nu
 Make sure the following **requirements** are installed on your system:
 
 - [dotnet SDK](https://www.microsoft.com/net/download/core) 3.0 or higher
-- [Mono](http://www.mono-project.com/) if you're on Linux or macOS.
 
 or
 
@@ -53,25 +50,6 @@ or
 $ ./build.sh  <optional buildtarget>// on unix
 ```
 
-The bin of your library should look similar to:
-
-```
-$ tree src/MyCoolNewLib/bin/
-src/MyCoolNewLib/bin/
-└── Debug
-    ├── net461
-    │   ├── FSharp.Core.dll
-    │   ├── MyCoolNewLib.dll
-    │   ├── MyCoolNewLib.pdb
-    │   ├── MyCoolNewLib.xml
-    └── netstandard2.1
-        ├── MyCoolNewLib.deps.json
-        ├── MyCoolNewLib.dll
-        ├── MyCoolNewLib.pdb
-        └── MyCoolNewLib.xml
-
-```
-
 ---
 
 ### Build Targets
@@ -97,15 +75,6 @@ src/MyCoolNewLib/bin/
 
 
 ### Releasing
-
-- [Start a git repo with a remote](https://help.github.com/articles/adding-an-existing-project-to-github-using-the-command-line/)
-
-```sh
-git add .
-git commit -m "Scaffold"
-git remote add origin https://github.com/user/MyCoolNewLib.git
-git push -u origin master
-```
 
 - [Create your NuGeT API key](https://docs.microsoft.com/en-us/nuget/nuget-org/publish-a-package#create-api-keys)
     - [Add your NuGet API key to paket](https://fsprojects.github.io/Paket/paket-config.html#Adding-a-NuGet-API-key)

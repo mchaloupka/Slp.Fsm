@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-* Support for creation
-* Ability to remove lambda edges
-* Ability to remove non-reachable states
+### Added
+- Support for creation
+- Ability to remove lambda edges
+- Ability to remove non-reachable states
