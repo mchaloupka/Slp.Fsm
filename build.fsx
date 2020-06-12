@@ -1,10 +1,27 @@
-open Argu
-#load ".fake/build.fsx/intellisense.fsx"
-#load "docsTool/CLI.fs"
+#r "paket:
+    nuget Argu
+    nuget Fake.IO.FileSystem
+    nuget Fake.Core.Target
+    nuget Fake.Core.ReleaseNotes
+    nuget FAKE.Core.Environment
+    nuget Fake.DotNet.Cli
+    nuget FAKE.Core.Process
+    nuget Fake.DotNet.AssemblyInfoFile
+    nuget Fake.Tools.Git
+    nuget Fake.DotNet.Paket
+    nuget Fake.Api.GitHub
+    nuget Fake.BuildServer.AppVeyor
+    nuget Fake.BuildServer.Travis
+    nuget Fantomas //"
+
 #if !FAKE
-#r "Facades/netstandard"
-#r "netstandard"
+  #r "netstandard"
 #endif
+
+#load "./.fake/build.fsx/intellisense.fsx"
+
+open Argu
+#load "docsTool/CLI.fs"
 open System
 open Fake.SystemHelper
 open Fake.Core
