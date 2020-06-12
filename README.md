@@ -2,6 +2,8 @@
 
 Finite State Machine implementation.
 
+The documentation is available at: https://mchaloupka.github.io/Slp.Fsm/
+
 ---
 
 ## Builds
