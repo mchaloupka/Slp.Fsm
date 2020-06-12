@@ -238,21 +238,6 @@ module dotnet =
     let fcswatch optionConfig args =
         tool optionConfig "fcswatch" args
 
-    let fsharpAnalyzer optionConfig args =
-        tool optionConfig "fsharp-analyzers" args
-
-module FSharpAnalyzers =
-    type Arguments =
-    | Project of string
-    | Analyzers_Path of string
-    | Fail_On_Warnings of string list
-    | Ignore_Files of string list
-    | Verbose
-    with
-        interface IArgParserTemplate with
-            member s.Usage = ""
-
-
 open DocsTool.CLIArgs
 module DocsTool =
     open Argu
@@ -311,11 +296,6 @@ let clean _ =
         ["bin";"obj"]
         |> Seq.map(fun sp -> IO.Path.GetDirectoryName p @@ sp ))
     |> Shell.cleanDirs
-
-    [
-        "paket-files/paket.restore.cached"
-    ]
-    |> Seq.iter Shell.rm
 
 let dotnetRestore _ =
     [sln]
@@ -421,23 +401,6 @@ let dotnetBuild ctx =
 
         }) sln
 
-let fsharpAnalyzers ctx =
-    let argParser = ArgumentParser.Create<FSharpAnalyzers.Arguments>(programName = "fsharp-analyzers")
-    !! srcGlob
-    |> Seq.iter(fun proj ->
-        let args  =
-            [
-                FSharpAnalyzers.Analyzers_Path (__SOURCE_DIRECTORY__ </> "packages/analyzers")
-                FSharpAnalyzers.Arguments.Project proj
-                FSharpAnalyzers.Arguments.Fail_On_Warnings [
-                    "BDH0002"
-                ]
-                FSharpAnalyzers.Verbose
-            ]
-            |> argParser.PrintCommandLineArgumentsFlat
-        dotnet.fsharpAnalyzer id args
-    )
-
 let dotnetTest ctx =
     let args =
         [
@@ -527,12 +490,6 @@ let dotnetPack ctx =
                 c.Common
                 |> DotNet.Options.withAdditionalArgs args
         }) sln
-
-let sourceLinkTest _ =
-    !! distGlob
-    |> Seq.iter (fun nupkg ->
-        dotnet.sourcelink id (sprintf "test %s" nupkg)
-    )
 
 let publishToNuget _ =
     allReleaseChecks ()
@@ -650,12 +607,10 @@ Target.create "UpdateChangelog" updateChangelog
 Target.createBuildFailure "RevertChangelog" revertChangelog  // Do NOT put this in the dependency chain
 Target.createFinal "DeleteChangelogBackupFile" deleteChangelogBackupFile  // Do NOT put this in the dependency chain
 Target.create "DotnetBuild" dotnetBuild
-Target.create "FSharpAnalyzers" fsharpAnalyzers
 Target.create "DotnetTest" dotnetTest
 Target.create "WatchTests" watchTests
 Target.create "GenerateAssemblyInfo" generateAssemblyInfo
 Target.create "DotnetPack" dotnetPack
-Target.create "SourceLinkTest" sourceLinkTest
 Target.create "PublishToNuGet" publishToNuget
 Target.create "GitRelease" gitRelease
 Target.create "ReleaseTokenChecks" tokensCheck
@@ -700,10 +655,8 @@ Target.create "ReleaseDocs" releaseDocs
 
 "DotnetRestore"
     ==> "DotnetBuild"
-    ==> "FSharpAnalyzers"
     ==> "DotnetTest"
     ==> "DotnetPack"
-    ==> "SourceLinkTest"
     ==> "PublishToNuGet"
     ==> "GitRelease"
     ==> "GitHubRelease"

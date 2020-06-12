@@ -2,40 +2,16 @@
   "version": 1,
   "isRoot": true,
   "tools": {
-    "sourcelink": {
-      "version": "3.1.1",
-      "commands": [
-        "sourcelink"
-      ]
-    },
-    "dotnet-reportgenerator-globaltool": {
-      "version": "4.6.1",
-      "commands": [
-        "reportgenerator"
-      ]
-    },
     "fake-cli": {
       "version": "5.20.0",
       "commands": [
         "fake"
       ]
     },
-    "paket": {
-      "version": "5.245.2",
-      "commands": [
-        "paket"
-      ]
-    },
     "fcswatch-cli": {
       "version": "0.7.14",
       "commands": [
         "fcswatch"
-      ]
-    },
-    "fsharp-analyzers": {
-      "version": "0.4.1",
-      "commands": [
-        "fsharp-analyzers"
       ]
     }
   }
