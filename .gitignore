@@ -263,9 +263,8 @@ dist/
 coverage.xml
 coverage.*.xml
 
-# Paket tool store
-.paket/.store
-.paket/paket
+# Release cmd
+build.release.cmd
 
 .fake
 .ionide

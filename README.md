@@ -72,21 +72,15 @@ $ ./build.sh  <optional buildtarget>    # on unix
 
 ### Releasing
 
-- [Create your NuGeT API key](https://docs.microsoft.com/en-us/nuget/nuget-org/publish-a-package#create-api-keys)
-    - [Add your NuGet API key to paket](https://fsprojects.github.io/Paket/paket-config.html#Adding-a-NuGet-API-key)
+Create a cmd file `build.release.cmd` with the following content to create the release:
+```
+@echo off
 
-    ```sh
-    paket config add-token "https://www.nuget.org" 4003d786-cc37-4004-bfdf-c4f3e8ef9b3a
-    ```
+set NUGET_TOKEN=<<nuget token>>
+set GITHUB_TOKEN=<<github token>>
 
-    - or set the environment variable `NUGET_TOKEN` to your key
-
-
-- [Create a GitHub OAuth Token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
-  - You can then set the environment variable `GITHUB_TOKEN` to upload release notes and artifacts to github
-  - Otherwise it will fallback to username/password
-
-- Then update the `CHANGELOG.md` with an "Unreleased" section containing release notes for this version, in [KeepAChangelog](https://keepachangelog.com/en/1.1.0/) format.
+build.cmd %*
+```
 
 NOTE: Its highly recommend to add a link to the Pull Request next to the release note that it affects. The reason for this is when the `RELEASE` target is run, it will add these new notes into the body of git commit. GitHub will notice the links and will update the Pull Request with what commit referenced it saying ["added a commit that referenced this pull request"](https://github.com/TheAngryByrd/MiniScaffold/pull/179#ref-commit-837ad59). Since the build script automates the commit message, it will say "Bump Version to x.y.z". The benefit of this is when users goto a Pull Request, it will be clear when and which version those code changes released. Also when reading the `CHANGELOG`, if someone is curious about how or why those changes were made, they can easily discover the work and discussions.
 
@@ -120,16 +114,6 @@ First release
   - push a git tag
   - create a GitHub release for that git tag
 
-macOS/Linux Parameter:
-
-```sh
-./build.sh Release 0.2.0
 ```
-
-macOS/Linux Environment Variable:
-
-```sh
-RELEASE_VERSION=0.2.0 ./build.sh Release
+build.release.cmd Release 0.2.0
 ```
-
-
