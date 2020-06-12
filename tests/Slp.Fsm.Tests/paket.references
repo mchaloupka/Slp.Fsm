@@ -1,7 +1,0 @@
-FSharp.Core
-Microsoft.NET.Test.Sdk
-altcover
-Microsoft.NETFramework.ReferenceAssemblies
-nuget FsCheck.Xunit
-nuget xunit
-nuget xunit.runner.visualstudio

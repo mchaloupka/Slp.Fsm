@@ -64,10 +64,6 @@ let srcAndTest =
 let distDir = __SOURCE_DIRECTORY__  @@ "dist"
 let distGlob = distDir @@ "*.nupkg"
 
-let coverageThresholdPercent = "80C255"
-let coverageReportDir =  __SOURCE_DIRECTORY__  @@ "docs" @@ "coverage"
-
-
 let docsDir = __SOURCE_DIRECTORY__  @@ "docs"
 let docsSrcDir = __SOURCE_DIRECTORY__  @@ "docsSrc"
 let docsToolDir = __SOURCE_DIRECTORY__ @@ "docsTool"
@@ -289,7 +285,7 @@ let allReleaseChecks () =
 
 
 let clean _ =
-    ["bin"; "temp" ; distDir; coverageReportDir]
+    ["bin"; "temp" ; distDir]
     |> Shell.cleanDirs
 
     !! srcGlob
@@ -426,17 +422,9 @@ let fsharpAnalyzers ctx =
     )
 
 let dotnetTest ctx =
-    let excludeCoverage =
-        !! testsGlob
-        |> Seq.map IO.Path.GetFileNameWithoutExtension
-        |> Seq.append [ "FSharp.Core"; "xunit" ]
-        |> String.concat "|"
     let args =
         [
             "--no-build"
-            sprintf "/p:AltCover=%b" (not disableCodeCoverage)
-            sprintf "/p:AltCoverThreshold=%s" coverageThresholdPercent
-            sprintf "/p:AltCoverAssemblyExcludeFilter=%s" excludeCoverage
         ]
     DotNet.test(fun c ->
 
@@ -446,29 +434,6 @@ let dotnetTest ctx =
                 c.Common
                 |> DotNet.Options.withAdditionalArgs args
             }) sln
-
-let generateCoverageReport _ =
-    let coverageReports =
-        !!"tests/**/coverage*.xml"
-        |> String.concat ";"
-    let sourceDirs =
-        !! srcGlob
-        |> Seq.map Path.getDirectory
-        |> String.concat ";"
-    let independentArgs =
-            [
-                sprintf "-reports:\"%s\""  coverageReports
-                sprintf "-targetdir:\"%s\"" coverageReportDir
-                // Add source dir
-                sprintf "-sourcedirs:\"%s\"" sourceDirs
-                // Ignore Tests and if AltCover.Recorder.g sneaks in
-                sprintf "-assemblyfilters:\"%s\"" "-*.Tests;-AltCover.Recorder.g"
-                sprintf "-Reporttypes:%s" "Html"
-            ]
-    let args =
-        independentArgs
-        |> String.concat " "
-    dotnet.reportgenerator id args
 
 let watchTests _ =
     !! testsGlob
@@ -586,6 +551,13 @@ let gitRelease _ =
     Git.Branches.tag "" tag
     Git.Branches.pushTag "" "origin" tag
 
+let tokensCheck _ =
+    allReleaseChecks ()
+
+    match githubToken with
+        | Some s -> ()
+        | _ -> failwith "please set the github_token environment variable to a github personal access token with repo access."
+
 let githubRelease _ =
     allReleaseChecks ()
     let token =
@@ -663,13 +635,13 @@ Target.createFinal "DeleteChangelogBackupFile" deleteChangelogBackupFile  // Do 
 Target.create "DotnetBuild" dotnetBuild
 Target.create "FSharpAnalyzers" fsharpAnalyzers
 Target.create "DotnetTest" dotnetTest
-Target.create "GenerateCoverageReport" generateCoverageReport
 Target.create "WatchTests" watchTests
 Target.create "GenerateAssemblyInfo" generateAssemblyInfo
 Target.create "DotnetPack" dotnetPack
 Target.create "SourceLinkTest" sourceLinkTest
 Target.create "PublishToNuGet" publishToNuget
 Target.create "GitRelease" gitRelease
+Target.create "ReleaseTokenChecks" tokensCheck
 Target.create "GitHubRelease" githubRelease
 Target.create "FormatCode" formatCode
 Target.create "Release" ignore
@@ -703,15 +675,16 @@ Target.create "ReleaseDocs" releaseDocs
 "BuildDocs" ==> "ReleaseDocs"
 "BuildDocs" ?=> "PublishToNuget"
 "DotnetPack" ?=> "BuildDocs"
-"GenerateCoverageReport" ?=> "ReleaseDocs"
 
 "DotnetBuild" ==> "WatchDocs"
+
+"ReleaseTokenChecks" ?=> "DotnetRestore"
+"ReleaseTokenChecks" ==> "Release"
 
 "DotnetRestore"
     ==> "DotnetBuild"
     ==> "FSharpAnalyzers"
     ==> "DotnetTest"
-    =?> ("GenerateCoverageReport", not disableCodeCoverage)
     ==> "DotnetPack"
     ==> "SourceLinkTest"
     ==> "PublishToNuGet"

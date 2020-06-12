@@ -8,7 +8,6 @@ nuget FsCheck.Xunit
 nuget xunit
 nuget xunit.runner.visualstudio
 nuget Microsoft.NET.Test.Sdk
-nuget altcover
 
 // [ FAKE GROUP ]
 group Build
@@ -44,8 +43,3 @@ group Docs
     nuget Fable.React
     nuget Dotnet.ProjInfo.Workspace.FCS
     nuget FSharp.Compiler.Service
-
-group Analyzers
-  source https://www.nuget.org/api/v2
-  source https://api.nuget.org/v3/index.json
-  nuget BinaryDefense.FSharp.Analyzers.Hashing
