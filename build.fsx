@@ -8,10 +8,8 @@
     nuget FAKE.Core.Process
     nuget Fake.DotNet.AssemblyInfoFile
     nuget Fake.Tools.Git
-    nuget Fake.DotNet.Paket
     nuget Fake.Api.GitHub
     nuget Fake.BuildServer.AppVeyor
-    nuget Fake.BuildServer.Travis
     nuget Fantomas //"
 
 #if !FAKE
@@ -23,7 +21,6 @@
 open Argu
 #load "docsTool/CLI.fs"
 open System
-open Fake.SystemHelper
 open Fake.Core
 open Fake.DotNet
 open Fake.Tools
@@ -38,7 +35,6 @@ open Fantomas.FakeHelpers
 
 BuildServer.install [
     AppVeyor.Installer
-    Travis.Installer
 ]
 
 let environVarAsBoolOrDefault varName defaultValue =
@@ -107,11 +103,8 @@ let publishUrl = "https://www.nuget.org"
 
 let docsSiteBaseUrl = sprintf "https://%s.github.io/%s" gitOwner gitRepoName
 
-let disableCodeCoverage = environVarAsBoolOrDefault "DISABLE_COVERAGE" false
-
 let githubToken = Environment.environVarOrNone "GITHUB_TOKEN"
 Option.iter(TraceSecrets.register "<GITHUB_TOKEN>" )
-
 
 let nugetToken = Environment.environVarOrNone "NUGET_TOKEN"
 Option.iter(TraceSecrets.register "<NUGET_TOKEN>")
@@ -493,16 +486,23 @@ let dotnetPack ctx =
 
 let publishToNuget _ =
     allReleaseChecks ()
-    Paket.push(fun c ->
-        { c with
-            ToolType = ToolType.CreateLocalTool()
-            PublishUrl = publishUrl
-            WorkingDir = "dist"
-            ApiKey = match nugetToken with
-                     | Some s -> s
-                     | _ -> c.ApiKey // assume paket-config was set properly
+
+    let setNugetPushParams (defaults:NuGet.NuGet.NuGetPushParams) =
+        { defaults with
+            ApiKey =
+                match nugetToken with
+                | Some _ -> nugetToken
+                | None -> failwith "please set the NUGET_TOKEN environment variable to a nuget token with publish access."
+            Source = "https://api.nuget.org/v3/index.json" |> Some
         }
-    )
+    let setParams (defaults:DotNet.NuGetPushOptions) =
+        { defaults with
+            PushParams = setNugetPushParams defaults.PushParams
+        }
+
+    !! distGlob
+    |> Seq.iter (DotNet.nugetPush setParams)
+
     // If build fails after this point, we've pushed a release out with this version of CHANGELOG.md so we should keep it around
     Target.deactivateBuildFailure "RevertChangelog"
 
@@ -529,15 +529,19 @@ let tokensCheck _ =
     allReleaseChecks ()
 
     match githubToken with
-        | Some s -> ()
-        | _ -> failwith "please set the github_token environment variable to a github personal access token with repo access."
+    | Some _ -> ()
+    | _ -> failwith "please set the GITHUB_TOKEN environment variable to a github personal access token with repo access."
+
+    match nugetToken with
+    | Some _ -> ()
+    | _ -> failwith "please set the NUGET_TOKEN environment variable to a nuget token with publish access."
 
 let githubRelease _ =
     allReleaseChecks ()
     let token =
         match githubToken with
         | Some s -> s
-        | _ -> failwith "please set the github_token environment variable to a github personal access token with repo access."
+        | _ -> failwith "please set the GITHUB_TOKEN environment variable to a github personal access token with repo access."
 
     let files = !! distGlob
     // Get release notes with properly-linked version number
