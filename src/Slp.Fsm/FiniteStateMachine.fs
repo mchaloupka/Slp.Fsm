@@ -211,5 +211,68 @@ module FiniteStateMachine =
             Edges = newEdges
         }
 
-    let intersect leftMachine rightMachine =
-        leftMachine
+    let intersect edgeIntersect leftMachine rightMachine =
+        let lm = leftMachine |> removeLambdaEdges
+        let rm = rightMachine |> removeLambdaEdges
+
+        let combineStates left right =
+            (Set.empty, left)
+            ||> Set.fold (
+                fun c ls ->
+                    (c, right)
+                    ||> Set.fold (
+                        fun cur rs ->
+                            cur |> Set.add (ls, rs)
+                    )
+            )
+
+        let combineEdges l r =
+            match lm.Edges.TryGetValue l with
+            | true, leftEdges ->
+                match rm.Edges.TryGetValue r with
+                | true, rightEdges ->
+                    leftEdges
+                    |> List.collect (
+                        function
+                        | lt, EdgeWithToken le ->
+                            rightEdges
+                            |> List.map (
+                                function
+                                | rt, EdgeWithToken re -> (lt, rt), (le, re)
+                                | _, LambdaEdge -> "Lambda edge is unexpected" |> invalidOp |> raise
+                            )
+                        | _, LambdaEdge -> "Lambda edge is unexpected" |> invalidOp |> raise
+                    )
+                | false, _ -> []
+            | false, _ -> []
+
+        let startStates = (lm.StartStates, rm.StartStates) ||> combineStates
+        let endStates = (lm.EndStates, rm.EndStates) ||> combineStates
+
+        let rec traverseEdges stateHistory stateQueue currentMachine =
+            match stateQueue with
+            | [] -> currentMachine
+            | x :: xs when stateHistory |> Set.contains x ->
+                traverseEdges stateHistory xs currentMachine
+            | edgeFrom :: xs ->
+                let newStateHistory = stateHistory |> Set.add edgeFrom
+                let allEdges = edgeFrom ||> combineEdges
+                let (modifiedMachine, statesToProcess) =
+                    ((currentMachine, List.empty), allEdges)
+                    ||> List.fold (
+                        fun (current, edges) edge ->
+                            match edge with
+                            | edgeTo, (le, re) ->
+                                match edgeIntersect le re with
+                                | Some e ->
+                                    current |> addEdge e edgeFrom edgeTo, edgeTo :: edges
+                                | None ->
+                                    current, edges
+                    )
+                traverseEdges newStateHistory (statesToProcess @ xs) modifiedMachine
+
+        {
+            StartStates = startStates
+            EndStates = endStates
+            Edges = Map.empty
+        } |> traverseEdges Set.empty (startStates |> Set.toList)

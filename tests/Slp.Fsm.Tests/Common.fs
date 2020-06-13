@@ -1,4 +1,4 @@
-﻿namespace FiniteStateMachine
+namespace FiniteStateMachine
 
 open Slp.Fsm
 open FsCheck
@@ -14,6 +14,16 @@ module ByteBasedEdges =
         match edge with
         | AnyByte -> true
         | ExactByte b -> b = x
+
+    let edgeIntersect l r =
+        match l, r with
+        | AnyByte, o
+        | o, AnyByte ->
+            Some(o)
+        | ExactByte a, ExactByte b when a = b ->
+            Some(ExactByte a)
+        | _ ->
+            None
 
     let private machineGenerator =
         let cartesian xs ys = 

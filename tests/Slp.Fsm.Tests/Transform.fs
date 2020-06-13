@@ -1,10 +1,10 @@
-﻿[<FsCheck.Xunit.Properties(Arbitrary=[| typeof<ByteBasedEdges.MachineGenerators> |], MaxTest = 2000, EndSize = 30)>]
+[<FsCheck.Xunit.Properties(Arbitrary=[| typeof<ByteBasedEdges.MachineGenerators> |], MaxTest = 2000, EndSize = 30)>]
 module FiniteStateMachine.Transform
 
 open Slp.Fsm
 open FsCheck.Xunit
 
-let accepts = FiniteStateMachine.accepts ByteBasedEdges.edgeEvaluator
+let accepts x = FiniteStateMachine.accepts ByteBasedEdges.edgeEvaluator x
 
 [<Property>]
 let ``RemoveLambdaEdges does not change accept`` (orMachine: ByteBasedEdges.ByteBasedFsm) (input: byte list) =
@@ -80,10 +80,10 @@ let ``After RemoveNonReachable the non-connected is empty`` (leftMachine: ByteBa
         Edges = Map.empty
     }
 
-[<Property(Skip="Not yet implemented")>]
+[<Property>]
 let ``Intersection of machines`` (leftMachine: ByteBasedEdges.ByteBasedFsm) (rightMachine: ByteBasedEdges.ByteBasedFsm) (input: byte list) =
     let machine =
         leftMachine
-        |> FiniteStateMachine.intersect rightMachine
+        |> FiniteStateMachine.intersect ByteBasedEdges.edgeIntersect rightMachine
 
     (machine |> accepts input) = ((leftMachine |> accepts input) && (rightMachine |> accepts input))
