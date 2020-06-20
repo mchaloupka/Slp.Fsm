@@ -102,8 +102,8 @@ let rec sortNavTree (navtree : NavTree list) =
         | File(title,_) -> title
         | Folder(title, _, _) ->
             if title = "Api_Reference" then "ZZZZZ" 
-            elif title = "How_Tos" then "AAAAA"
-            elif title = "Tutorials" then "BBBB"
+            elif title = "How_Tos" then "BBBBB"
+            elif title = "Tutorials" then "AAAAA"
             else title
     )
 
