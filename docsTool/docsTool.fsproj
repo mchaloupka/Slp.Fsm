@@ -26,6 +26,7 @@
     <PackageReference Include="Fable.React" Version="6.2.0" />
     <PackageReference Include="Fake.DotNet.Cli" Version="5.20.0" />
     <PackageReference Include="Fake.IO.FileSystem" Version="5.20.0" />
+    <PackageReference Include="Flurl" Version="2.8.2" />
     <PackageReference Include="FSharp.Formatting" Version="4.1.0" />
   </ItemGroup>
 

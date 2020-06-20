@@ -1,9 +1,11 @@
 namespace DocsTool
 
+open Flurl
+
 module Uri =
     open System
     let simpleCombine (slug : string) (baseUri : Uri) =
-        (Uri(baseUri, slug)).AbsoluteUri
+        Url.Combine(baseUri.AbsoluteUri, slug)
 
     let create (url : string) =
         match Uri.TryCreate(url, UriKind.Absolute) with
