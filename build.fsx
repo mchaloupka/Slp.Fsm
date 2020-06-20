@@ -84,7 +84,7 @@ let docsToolDir = __SOURCE_DIRECTORY__ @@ "docsTool"
 let gitOwner = "mchaloupka"
 let gitRepoName = "Slp.Fsm"
 
-let gitHubRepoUrl = sprintf "https://github.com/%s/%s/" gitOwner gitRepoName
+let gitHubRepoUrl = sprintf "https://github.com/%s/%s" gitOwner gitRepoName
 
 let releaseBranch = "master"
 
@@ -101,7 +101,7 @@ let mutable changelogBackupFilename = ""
 
 let publishUrl = "https://www.nuget.org"
 
-let docsSiteBaseUrl = sprintf "https://%s.github.io/%s/" gitOwner gitRepoName
+let docsSiteBaseUrl = sprintf "https://%s.github.io/%s" gitOwner gitRepoName
 
 let githubToken = Environment.environVarOrNone "GITHUB_TOKEN"
 Option.iter(TraceSecrets.register "<GITHUB_TOKEN>" )

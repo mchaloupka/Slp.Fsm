@@ -100,7 +100,11 @@ let rec sortNavTree (navtree : NavTree list) =
     |> List.sortBy(fun navtree ->
         match navtree with
         | File(title,_) -> title
-        | Folder(title, _, _) -> title
+        | Folder(title, _, _) ->
+            if title = "Api_Reference" then "ZZZZZ" 
+            elif title = "How_Tos" then "AAAAA"
+            elif title = "Tutorials" then "BBBB"
+            else title
     )
 
 let navTreeFromPaths (rootPath : IO.DirectoryInfo) (files : IO.FileInfo list) =
