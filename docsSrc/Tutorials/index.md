@@ -9,5 +9,3 @@ let myAge = 21
 
     [lang=bash]
     paket install Slp.Fsm
-
-

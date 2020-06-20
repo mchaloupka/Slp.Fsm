@@ -4,11 +4,13 @@
 
 ## What is Slp.Fsm?
 
-Slp.Fsm is a library that does this specific thing.  
+Slp.Fsm is a library to create and manipulate Finite State automaton.
 
 ## Why use Slp.Fsm?
 
-I created it because I had to solve an issue with this other thing.
+I have created this package as I have not found a similar one. My goal was related to [R2RML](https://www.w3.org/TR/r2rml/) processing. I wanted to answer a question whether two templates can generate the same value. Usage of finite state machine seems to be a perfect fit. I want to build a machine for both templates, do intersection of them. Output of that is a machine that accepts only strings that can be produced by both templates.
+
+I have looked for other finite state machine implementations but I had no luck with it. I had some specific requirements - I wanted to define custom edges (like an edge accepting all IRI unreserved characters). I have not found any solution matching my needs so I decided to implement a simple one by myself.
 
 ---
 
@@ -17,10 +19,10 @@ I created it because I had to solve an issue with this other thing.
     <div class="card h-100">
       <div class="card-body">
         <h5 class="card-title">Tutorials</h5>
-        <p class="card-text">Takes you by the hand through a series of steps to create your first thing. </p>
+        <p class="card-text">Takes you by the hand through a series of steps to create your first automaton. </p>
       </div>
       <div class="card-footer text-right   border-top-0">
-        <a href="{{siteBaseUrl}}/Tutorials/Getting_Started.html" class="btn btn-primary">Get started</a>
+        <a href="{{siteBaseUrl}}/Tutorials/index.html" class="btn btn-primary">Get started</a>
       </div>
     </div>
   </div>
@@ -28,10 +30,10 @@ I created it because I had to solve an issue with this other thing.
     <div class="card h-100">
       <div class="card-body">
         <h5 class="card-title">How-To Guides</h5>
-        <p class="card-text">Guides you through the steps involved in addressing key problems and use-cases. </p>
+        <p class="card-text">Guides you through the steps involved in various use-cases. </p>
       </div>
       <div class="card-footer text-right   border-top-0">
-        <a href="{{siteBaseUrl}}/How_Tos/Doing_A_Thing.html" class="btn btn-primary">Learn Usecases</a>
+        <a href="{{siteBaseUrl}}/How_Tos/index.html" class="btn btn-primary">Learn Usecases</a>
       </div>
     </div>
   </div>
@@ -39,10 +41,10 @@ I created it because I had to solve an issue with this other thing.
     <div class="card h-100">
       <div class="card-body">
         <h5 class="card-title">Explanations</h5>
-        <p class="card-text">Discusses key topics and concepts at a fairly high level and provide useful background information and explanation..</p>
+        <p class="card-text">Discusses key topics and concepts at a fairly high level and provide useful background information and explanation.</p>
       </div>
       <div class="card-footer text-right   border-top-0">
-        <a href="{{siteBaseUrl}}/Explanations/Background.html" class="btn btn-primary">Dive Deeper</a>
+        <a href="{{siteBaseUrl}}/Explanations/index.html" class="btn btn-primary">Dive Deeper</a>
       </div>
     </div>
   </div>
@@ -53,7 +55,7 @@ I created it because I had to solve an issue with this other thing.
         <p class="card-text">Contain technical reference for APIs.</p>
       </div>
       <div class="card-footer text-right   border-top-0">
-        <a href="{{siteBaseUrl}}/Api_Reference/Slp.Fsm/Slp.Fsm.html" class="btn btn-primary">Read Api Docs</a>
+        <a href="{{siteBaseUrl}}/Api_Reference/index.html" class="btn btn-primary">Read Api Docs</a>
       </div>
     </div>
   </div>
