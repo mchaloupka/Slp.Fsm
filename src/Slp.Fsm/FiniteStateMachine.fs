@@ -211,6 +211,26 @@ module FiniteStateMachine =
             Edges = newEdges
         }
 
+    let canAccept machine =
+        let rec canAcceptImpl visited toVisit =
+            match toVisit with
+            | [] -> false
+            | x :: xs when visited |> Set.contains x -> canAcceptImpl visited xs
+            | x :: _ when machine.EndStates |> Set.contains x -> true
+            | x :: xs ->
+                let newVisited = visited |> Set.add x
+
+                match machine.Edges.TryGetValue x with
+                | true, edges ->
+                    (edges |> List.map fst) @ xs
+                    |> canAcceptImpl newVisited
+                | false, _ ->
+                    canAcceptImpl newVisited xs
+
+        machine.StartStates
+        |> Set.toList
+        |> canAcceptImpl Set.empty
+
     let intersect edgeIntersect leftMachine rightMachine =
         let lm = leftMachine |> removeLambdaEdges
         let rm = rightMachine |> removeLambdaEdges

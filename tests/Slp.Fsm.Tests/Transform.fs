@@ -81,6 +81,32 @@ let ``After RemoveNonReachable the non-connected is empty`` (leftMachine: ByteBa
     }
 
 [<Property>]
+let ``If not accepting machine, then it does not accept any input`` (machine: ByteBasedEdges.ByteBasedFsm) (input: byte list) =
+    if machine |> FiniteStateMachine.canAccept |> not then
+        machine |> accepts input |> not
+    else
+        true
+
+[<Property(EndSize=15)>]
+let ``If cannot accept, then remove non-reachable results in empty machine`` (machine: ByteBasedEdges.ByteBasedFsm)  =
+    let reducedMachine =
+        machine
+        |> FiniteStateMachine.removeNonReachable
+
+    if machine |> FiniteStateMachine.canAccept then
+        reducedMachine <> {
+            StartStates = Set.empty
+            EndStates = Set.empty
+            Edges = Map.empty
+        }
+    else
+        reducedMachine = {
+            StartStates = Set.empty
+            EndStates = Set.empty
+            Edges = Map.empty
+        }
+
+[<Property>]
 let ``Intersection of machines`` (leftMachine: ByteBasedEdges.ByteBasedFsm) (rightMachine: ByteBasedEdges.ByteBasedFsm) (input: byte list) =
     let machine =
         leftMachine
