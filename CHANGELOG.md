@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added support for a quicker `canAccept` check
 
+### Fixed
+- Changed `accepts` to be depth first
+
 ## [0.1.0] - 2020-06-20
 
 ### Added

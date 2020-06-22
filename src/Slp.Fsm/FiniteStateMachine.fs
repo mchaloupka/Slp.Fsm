@@ -75,7 +75,7 @@ module FiniteStateMachine =
                                 List.empty
                     )
 
-                evaluateQueue (cs @ nextStates)
+                evaluateQueue (nextStates @ cs)
 
         machine.StartStates
         |> Set.toList
