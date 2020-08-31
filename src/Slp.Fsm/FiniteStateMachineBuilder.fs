@@ -1,18 +1,18 @@
-﻿namespace Slp.Fsm
+namespace Slp.Fsm
 
 module FiniteStateMachineBuilder =
     let initial node = { StartStates = set [ node ]; Edges = Map.empty; EndStates = set [ node ] }
 
-    let appendEdge edge node appendTo =
-        ({ appendTo with
+    let appendEdge edge node (machine: FiniteStateMachine<_,_>) =
+        ({ machine with
             EndStates = set [ node ]
-        }, appendTo.EndStates)
+        }, machine.EndStates)
         ||> Set.fold (
             fun current endState ->
                 FiniteStateMachine.addEdge edge endState node current
         )
 
-    let private interconnect fromNodes toNodes machine =
+    let private interconnect fromNodes toNodes (machine: FiniteStateMachine<_,_>) =
         (machine, fromNodes)
         ||> Seq.fold (
             fun current fromNode ->
@@ -23,7 +23,7 @@ module FiniteStateMachineBuilder =
                 )
         )
 
-    let private addNewEndState node machine =
+    let private addNewEndState node (machine: FiniteStateMachine<_,_>) =
         { machine with
             EndStates = set [ node ]
         }
@@ -35,7 +35,7 @@ module FiniteStateMachineBuilder =
         }
         |> interconnect [ node ] machine.StartStates
 
-    let appendMachine machine appendTo =
+    let appendMachine (machine: FiniteStateMachine<_,_>) (appendTo: FiniteStateMachine<_,_>) =
         { appendTo with
             Edges = FiniteStateMachine.mergeEdges machine.Edges appendTo.Edges
             EndStates = machine.EndStates
@@ -48,7 +48,7 @@ module FiniteStateMachineBuilder =
         |> addNewEndState newEndState
         |> fun m -> m |> interconnect m.StartStates m.EndStates
 
-    let transformNodes transformNode machine =
+    let transformNodes transformNode (machine: FiniteStateMachine<_,_>) =
         let nodeTransform =
             (machine.EndStates |> Set.union machine.StartStates, machine.Edges)
             ||> Map.fold (
@@ -78,17 +78,17 @@ module FiniteStateMachineBuilder =
             Edges = transformedEdges
         }
 
-    let infiniteRepeat newStartState newEndState machine =
+    let infiniteRepeat newStartState newEndState (machine: FiniteStateMachine<_,_>) =
         machine
         |> optional newStartState newEndState
         |> FiniteStateMachine.addEmptyEdge newEndState newStartState
 
-    let atLeastOneRepeat newStartState newIntermediateState transformNode machine =
+    let atLeastOneRepeat newStartState newIntermediateState transformNode (machine: FiniteStateMachine<_,_>) =
         machine
         |> infiniteRepeat newStartState newIntermediateState
         |> appendMachine (machine |> transformNodes transformNode)
 
-    let repeat transformNode count machine =
+    let repeat transformNode count (machine: FiniteStateMachine<_,_>) =
         if count < 2 then
             "Count needs to be at least 2" |> invalidArg "count" |> raise
 
@@ -102,7 +102,7 @@ module FiniteStateMachineBuilder =
 
         repeatImpl (count - 1) machine
 
-    let choice newStartNode newEndState machines =
+    let choice newStartNode newEndState (machines: FiniteStateMachine<_,_> list) =
         ({ initial newStartNode with
             EndStates = set [ newEndState ]
         }, machines)
