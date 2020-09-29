@@ -99,14 +99,14 @@ module DeterministicFiniteStateMachine =
                     |> Map.tryFind state
                     |> Option.defaultValue List.empty
                     |> List.filter (
-                        fun (t, e) ->
+                        fun (_, e) ->
                             edgeEvaluator(e, x)
                     )
 
                 match edgesFrom with
                 | [] ->
                     false
-                | (t,_)::[] ->
+                | [(t,_)] ->
                     acceptsFromState t xs
                 | matchingEdges ->
                     matchingEdges
