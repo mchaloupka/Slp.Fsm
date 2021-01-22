@@ -644,7 +644,8 @@ Target.create "ReleaseDocs" releaseDocs
 "DotnetBuild" ==> "BuildDocs"
 "BuildDocs" ==> "ReleaseDocs"
 "BuildDocs" ?=> "PublishToNuget"
-"DotnetPack" ?=> "BuildDocs"
+"GitRelease" ?=> "ReleaseDocs"
+"ReleaseDocs" ==> "GitHubRelease"
 
 "DotnetBuild" ==> "WatchDocs"
 
