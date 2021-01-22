@@ -516,6 +516,7 @@ let gitRelease _ =
         |> ignore
 
     !! "src/**/AssemblyInfo.fs"
+    ++ "tests/**/AssemblyInfo.fs"
         |> Seq.iter (Git.Staging.stageFile "" >> ignore)
 
     Git.Commit.exec "" (sprintf "Bump version to %s\n\n%s" latestEntry.NuGetVersion releaseNotesGitCommitFormat)
