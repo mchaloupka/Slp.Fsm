@@ -10,7 +10,8 @@
     nuget Fake.Tools.Git
     nuget Fake.Api.GitHub
     nuget Fake.BuildServer.AppVeyor
-    nuget Fantomas //"
+    nuget Fantomas
+    nuget Fantomas.Extras //"
 
 #if !FAKE
   #r "netstandard"
@@ -31,7 +32,7 @@ open Fake.Core.TargetOperators
 open Fake.Api
 open Fake.BuildServer
 open Fantomas
-open Fantomas.FakeHelpers
+open Fantomas.Extras
 
 BuildServer.install [
     AppVeyor.Installer
@@ -561,16 +562,9 @@ let formatCode _ =
     |> Seq.collect id
     // Ignore AssemblyInfo
     |> Seq.filter(fun f -> f.EndsWith("AssemblyInfo.fs") |> not)
-    |> formatFilesAsync FormatConfig.FormatConfig.Default
+    |> FakeHelpers.formatCode
     |> Async.RunSynchronously
-    |> Seq.iter(fun result ->
-        match result with
-        | Formatted(original, tempfile) ->
-            tempfile |> Shell.copyFile original
-            Trace.logfn "Formatted %s" original
-        | _ -> ()
-    )
-
+    |> Seq.iter(Trace.logfn "Formatted %s")
 
 let buildDocs _ =
     DocsTool.build ()
